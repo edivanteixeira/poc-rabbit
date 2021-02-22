@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    network_mode: host
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: MongoExpress2021!
+    ports:
+      - "27017:27017"
+  rabbit:
+    network_mode: host
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    
+  server:
+    restart: always
+    network_mode: host
+    build: ./
+    ports:
+      - "5000:5000"
+    depends_on:
+      - rabbit
+
+
+  consumer-1:
+    restart: always
+    environment: 
+      - CONSUMER_NAME="Consumer1"
+    network_mode: host
+    build: ./Consumer
+    depends_on:
+      - rabbit
+
+
+  consumer-2:
+    restart: always
+    environment: 
+      - CONSUMER_NAME="Consumer2"
+    network_mode: host
+    build: ./Consumer
+    depends_on:
+      - rabbit
+
+  consumer-3:
+    restart: always
+    environment: 
+      - CONSUMER_NAME="Consumer3"
+    network_mode: host
+    build: ./Consumer
+    depends_on:
+      - rabbit
