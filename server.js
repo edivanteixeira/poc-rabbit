@@ -20,6 +20,9 @@ app.post("/process", async (req, res) => {
   const batchId = uuidv4();
   const timeName = `Send${data.totalMessages}MessagesToRabbit`;
   console.time(timeName);
+  var hrstart = process.hrtime();
+  var start = new Date();
+
   for (let i = 0; i < data.totalMessages; i++) {
     const dataToQueue = {
       createdAt: new Date(),
@@ -31,7 +34,7 @@ app.post("/process", async (req, res) => {
       requestOrder: i,
       errors: [],
       onErrorQueue: "pix-error-queue",
-      retry:0
+      retry: 0,
     };
     channel.publish(
       "amq.direct",
@@ -39,9 +42,12 @@ app.post("/process", async (req, res) => {
       Buffer.from(JSON.stringify(dataToQueue))
     );
   }
+  var end = new Date() - start,
+    hrend = process.hrtime(hrstart);
   console.timeEnd(timeName);
   res.send({
-    ok: true,
+    batchId,
+    execution: `Execution time: ${end}ms`,
   });
 });
 
