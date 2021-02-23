@@ -15,7 +15,7 @@ Outro ponto é que rodando em container estamos limitados ao numero de processad
 
 
 ![Exemplo de funcionamento](./assets/board2.jpg "Exemplo de funcionamento")
-
+https://miro.com/app/board/o9J_lTK8dkM=/
 
 ### Documentação
 https://www.rabbitmq.com/getstarted.html
@@ -69,7 +69,7 @@ O disparo para a fila poderia ser feito apenas usando um unico tópico ou mais d
 
 
 ![Exemplo de implementação](./assets/board2.jpg "Exemplo de implementação")
-
+https://miro.com/app/board/o9J_lTK8dkM=/
 ## POC
 A ideia é ter um ambiente onde podemos executar diversas transações simultaneas.
 
