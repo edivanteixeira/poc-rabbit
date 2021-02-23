@@ -112,5 +112,7 @@ Delay inicial: Serve para gerar um atraso no inicio do envio das transações
 
 Percentual de falha: Define quantos porcento das transações irão gerar erro, a ideia seria implementar um tratamento de erro mas no momento apenas é gerado um erro e e retorna para a fila apenas um retry.
 
-Tempp médio de processamento: Tempo de simulação de quanto tempo irá demorar o processamento de cada transação.
+Tempo médio de processamento: Tempo de simulação de quanto tempo irá demorar o processamento de cada transação.
 
+![Exemplo de implementação](./assets/batch2.png "Exemplo de implementação")
+Tela com listagem de transações simuladas e ordenadas pela execução.
