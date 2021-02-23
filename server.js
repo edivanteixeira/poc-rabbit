@@ -1,56 +1,59 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const amqp = require("amqplib");
-const { v4: uuidv4 } = require("uuid");
+const cors = require("cors");
+const RabbitService = require("./RabbitService");
+const DatabaseService = require("./DatabaseService");
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT;
+const { Worker, isMainThread } = require("worker_threads");
 
+app.use(cors());
+app.options('*', cors());
 app.use(bodyParser.json());
 
-app.post("/process", async (req, res) => {
-  const data = req.body;
-  const queueName = "pix-queue";
-  const connection = await amqp.connect("amqp://localhost");
-  const channel = await connection.createChannel();
-  channel.assertQueue(queueName, {
-    durable: true,
-  });
-  channel.assertExchange("amq.direct", "direct");
-  channel.bindQueue(queueName, "amq.direct", "pix-queue");
-  const batchId = uuidv4();
-  const timeName = `Send${data.totalMessages}MessagesToRabbit`;
-  console.time(timeName);
-  var hrstart = process.hrtime();
-  var start = new Date();
+const rabbitService = new RabbitService();
+const databaseService = new DatabaseService();
 
-  for (let i = 0; i < data.totalMessages; i++) {
-    const dataToQueue = {
-      createdAt: new Date(),
-      percentError: data.percentError,
-      payload: data.payload,
-      processTime: data.processTime,
-      batchId: batchId,
-      requestId: uuidv4(),
-      requestOrder: i,
-      errors: [],
-      onErrorQueue: "pix-error-queue",
-      retry: 0,
-    };
-    channel.publish(
-      "amq.direct",
-      "pix-queue",
-      Buffer.from(JSON.stringify(dataToQueue))
-    );
+app.get("/", async (req, res) => {});
+
+app.get("/batch", async (req, res) => {
+  await rabbitService.init();
+  await databaseService.init();
+  const batchs = await databaseService.getAllBatchs();
+  res.json(batchs);
+});
+
+app.get("/batch/:id", async (req, res) => {
+  const batch = await databaseService.getBatch(req.params.id);
+  if (batch) {
+    res.status(200).json(batch);
+  } else {
+    res.status(404).json("404 - Not found");
   }
-  var end = new Date() - start,
-    hrend = process.hrtime(hrstart);
-  console.timeEnd(timeName);
-  res.send({
-    batchId,
-    execution: `Execution time: ${end}ms`,
+});
+
+app.post("/batch", async (req, res) => {
+  const data = req.body;
+  const batch = await databaseService.createBatch(data.batchName);
+
+  data.simulations.forEach(async (simulation) => {
+    if (isMainThread) {
+      const worker = new Worker("./sender.js", { env: { ...process.env } });
+      worker.postMessage({
+        simulation: simulation,
+        batchId: batch.id,
+      });
+    }
   });
+
+  if (batch) {
+    res.status(200).json(batch);
+  } else {
+    res.status(404).json("404 - Not found");
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
+

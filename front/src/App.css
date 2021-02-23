@@ -1,0 +1,41 @@
+body{
+  padding: 20px;
+  list-style: none;
+  text-decoration: none;
+}
+
+
+.tr5 {
+  background-color: #330F0A;
+  color:white;
+  padding: 5px;
+}
+
+.tr4 {
+  background-color: #50d8b4;
+  color:black;
+  padding: 5px;
+}
+
+.tr3 {
+  background-color: #65743A;
+  color:white;
+  padding: 5px;
+}
+
+.tr2 {
+  background-color: #EFDD8D;
+  color:black;
+  padding: 5px;
+}
+
+.tr1 {
+  background-color: #F4FDAF;
+  color:black;
+  padding: 5px;
+}
+.tr0 {
+  background-color: #394F49;
+  color:white;
+  padding: 5px;
+}

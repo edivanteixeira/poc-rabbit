@@ -13,9 +13,17 @@
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "chance": "^1.1.7",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "expressjs": "^1.0.1",
-    "mongodb": "^3.6.4",
+    "morgan": "^1.10.0",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
+    "pm2": "^4.5.4",
+    "sequelize": "^6.5.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }
