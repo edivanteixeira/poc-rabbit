@@ -14,7 +14,7 @@ Outro ponto é que rodando em container estamos limitados ao numero de processad
 ## Sobre o Rabbit
 
 
-![Exemplo de funcionamento](./assets/board2.jpg "Exemplo de funcionamento")
+![Exemplo de funcionamento](./assets/board1.jpg "Exemplo de funcionamento")
 https://miro.com/app/board/o9J_lTK8dkM=/
 
 ### Documentação
