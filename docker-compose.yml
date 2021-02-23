@@ -10,7 +10,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     healthcheck:
-        test: ["CMD", "curl", "-f", "http://rabbit:15672"]
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
         interval: 30s
         timeout: 10s
         retries: 5
@@ -72,28 +72,40 @@ services:
       - POSTGRES_PASSWORD=Postgres2021!
       - NODE_ENV=production
       - CONSUMER_NAME=Consumer1
+  
+  consumer-2:
+    restart: always
+    build: ./Consumer
+    networks: 
+      - default
+    depends_on:
+      - rabbit
+    environment: 
+      - POSTGRES_HOST=postgres
+      - PGPORT=15432
+      - POSTGRES_DATABASE=poc
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Postgres2021!
+      - NODE_ENV=production
+      - CONSUMER_NAME=Consumer2
 
-  # consumer-2:
-  #   restart: always
-  #   environment: 
-  #     - CONSUMER_NAME="Consumer2"
-  #   network_mode: host
-  #   build: ./Consumer
-  #   depends_on:
-  #     - rabbit
-  #   environment: 
-  #     - MONGO_CONNECTION="mongodb://mongouser:MongoExpress2021!@localhost:27017/?authSource=admin"
+  consumer-3:
+    restart: always
+    build: ./Consumer
+    networks: 
+      - default
+    depends_on:
+      - rabbit
+    environment: 
+      - POSTGRES_HOST=postgres
+      - PGPORT=15432
+      - POSTGRES_DATABASE=poc
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Postgres2021!
+      - NODE_ENV=production
+      - CONSUMER_NAME=Consumer3
 
-  # consumer-3:
-  #   restart: always
-  #   environment: 
-  #     - CONSUMER_NAME="Consumer3"
-  #   network_mode: host
-  #   build: ./Consumer
-  #   depends_on:
-  #     - rabbit
-  #   environment: 
-  #     - MONGO_CONNECTION="mongodb://mongouser:MongoExpress2021!@localhost:27017/?authSource=admin"
+  
 networks:
   default:
     driver: bridge
